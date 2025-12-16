@@ -1,20 +1,54 @@
+let cachedVoices = null;
+let cacheTimestamp = 0;
+
+const CACHE_DURATION = 1000 * 60 * 60 * 6; // 6 saat
+
 export default async function handler(req, res) {
   try {
-    const r = await fetch("https://api.elevenlabs.io/v1/voices", {
+    const now = Date.now();
+
+    // ✅ Cache varsa ve süresi dolmadıysa
+    if (cachedVoices && now - cacheTimestamp < CACHE_DURATION) {
+      return res.status(200).json({
+        source: "cache",
+        voices: cachedVoices
+      });
+    }
+
+    // 🔁 Cache yoksa ElevenLabs'a git
+    const response = await fetch("https://api.elevenlabs.io/v1/voices", {
       headers: {
-        "xi-api-key": process.env.ELEVENLABS_API_KEY
+        "xi-api-key": process.env.ElevenLabsAPI
       }
     });
 
-    if (!r.ok) {
-      const err = await r.text();
-      return res.status(500).json({ error: err });
+    if (!response.ok) {
+      throw new Error("ElevenLabs API error");
     }
 
-    const data = await r.json();
-    res.status(200).json(data);
+    const data = await response.json();
+    const voices = data.voices || [];
 
-  } catch (e) {
-    res.status(500).json({ error: e.message });
+    // 💾 Cache'e yaz
+    cachedVoices = voices;
+    cacheTimestamp = now;
+
+    res.status(200).json({
+      source: "live",
+      voices
+    });
+
+  } catch (error) {
+    // 🚑 API patladıysa cache varsa onu dön
+    if (cachedVoices) {
+      return res.status(200).json({
+        source: "cache-fallback",
+        voices: cachedVoices
+      });
+    }
+
+    res.status(500).json({
+      error: "Failed to fetch voices"
+    });
   }
 }
