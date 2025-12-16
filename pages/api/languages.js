@@ -8,27 +8,30 @@ export default async function handler(req, res) {
 
     const data = await response.json();
 
-    if (!data.voices) {
-      return res.status(500).json({ error: "Voices data not found" });
+    const voices = Array.isArray(data)
+      ? data
+      : Array.isArray(data.voices)
+      ? data.voices
+      : [];
+
+    if (voices.length === 0) {
+      return res.status(200).json({ languages: [] });
     }
 
     const languagesSet = new Set();
 
-    data.voices.forEach(voice => {
+    voices.forEach(voice => {
       if (voice.labels) {
-        if (voice.labels.language) {
-          languagesSet.add(voice.labels.language);
-        }
-        if (voice.labels.accent) {
-          languagesSet.add(voice.labels.accent);
-        }
+        Object.values(voice.labels).forEach(value => {
+          if (typeof value === "string") {
+            languagesSet.add(value);
+          }
+        });
       }
     });
 
-    const languages = Array.from(languagesSet);
-
     res.status(200).json({
-      languages
+      languages: Array.from(languagesSet)
     });
 
   } catch (error) {
