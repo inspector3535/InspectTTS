@@ -1,50 +1,66 @@
-let cachedVoices = null;
-let cacheTimestamp = 0;
+let cachedVoices = null
+let cachedAt = 0
 
-const CACHE_DURATION = 1000 * 60 * 60 * 6;
+const CACHE_TTL = 6 * 60 * 60 * 1000 // 6 saat
+
+const FALLBACK_VOICES = [
+  {
+    voice_id: "fallback-1",
+    name: "Default Voice",
+    description: "Fallback voice used when ElevenLabs is unavailable",
+    labels: { accent: "neutral", gender: "neutral" }
+  }
+]
 
 export default async function handler(req, res) {
+  const now = Date.now()
+
+  // 1️⃣ CACHE
+  if (cachedVoices && (now - cachedAt) < CACHE_TTL) {
+    return res.status(200).json({
+      source: "cache",
+      voices: cachedVoices
+    })
+  }
+
+  // 2️⃣ LIVE
   try {
-    const now = Date.now();
-
-    if (cachedVoices && now - cacheTimestamp < CACHE_DURATION) {
-      return res.status(200).json({
-        source: "cache",
-        voices: cachedVoices
-      });
-    }
-
     const response = await fetch("https://api.elevenlabs.io/v1/voices", {
       headers: {
-        "xi-api-key": process.env.ElevenLabsAPI,
-        "Accept": "application/json"
+        "xi-api-key": process.env.ElevenLabsAPI
       }
-    });
+    })
 
     if (!response.ok) {
-      const text = await response.text();
-      return res.status(response.status).json({
-        error: "ElevenLabs API error",
-        status: response.status,
-        details: text
-      });
+      throw new Error(`ElevenLabs error ${response.status}`)
     }
 
-    const data = await response.json();
-    const voices = data.voices || [];
+    const data = await response.json()
+    const voices = data.voices || []
 
-    cachedVoices = voices;
-    cacheTimestamp = now;
+    cachedVoices = voices
+    cachedAt = now
 
-    res.status(200).json({
+    return res.status(200).json({
       source: "live",
       voices
-    });
+    })
 
-  } catch (err) {
-    res.status(500).json({
-      error: "Unexpected server error",
-      message: err.message
-    });
+  } catch (error) {
+
+    // 3️⃣ FALLBACK
+    if (cachedVoices) {
+      return res.status(200).json({
+        source: "cache",
+        voices: cachedVoices,
+        warning: "Live fetch failed, serving cached data"
+      })
+    }
+
+    return res.status(200).json({
+      source: "fallback",
+      voices: FALLBACK_VOICES,
+      error: "Live and cache unavailable"
+    })
   }
 }
