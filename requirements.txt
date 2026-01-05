@@ -1,0 +1,11 @@
+wxpython>=4.1.0
+requests>=2.25.0
+configparser
+pydub>=0.24.0
+pdfminer.six>=20201018
+python-docx>=0.8.0
+reportlab>=3.5.0
+ebooklib>=0.17.0
+beautifulsoup4>=4.9.0
+pytest
+pytest-qt
