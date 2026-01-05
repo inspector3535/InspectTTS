@@ -1,75 +1,72 @@
 # InspectTTS (Experimental)
 
-InspectTTS is a desktop application for text-to-speech conversion, file reading, AI chat, and file conversion. Built with wxPython, it supports multiple languages and formats.
+InspectTTS is an experimental desktop application focused on text-to-speech conversion, document reading, AI-assisted text analysis, and file conversion.  
+It is designed with accessibility in mind and primarily targets screen reader users.
 
 ## Features
 
-- **Text-to-Speech**: Convert text to audio with adjustable speed and pitch.
-- **File Support**: Read from TXT, PDF, RTF, DOC, DOCX, and EPUB files.
-- **AI Integration**: Chat with Gemini AI for text analysis.
-- **File Conversion**: Convert between TXT, PDF, RTF, and DOCX formats.
-- **Notepad**: Simple text editor with export options.
-- **Reader**: Display file contents.
-- **Web Page Fetching**: Extract text from web pages.
+- **Text-to-Speech**
+  - Convert text to audio with adjustable speed and pitch
+  - Multiple language support
 
-## Requirements
+- **File Support**
+  - TXT, PDF, RTF, DOC, DOCX, EPUB
 
-- Python 3.7+
-- wxPython
-- requests
-- pydub (for audio processing)
-- pdfminer.six (for PDF reading)
-- python-docx (for DOCX handling)
-- ebooklib (for EPUB reading)
-- beautifulsoup4 (for HTML parsing)
-- reportlab (for PDF generation)
+- **AI Integration**
+  - Text analysis and summarization using Gemini AI (API key required)
 
-## Installation
+- **File Converter**
+  - Convert between common document formats
 
-1. Clone the repository:
-   ```
-   git clone https://github.com/yourusername/inspecttts.git
-   cd inspecttts
-   ```
+- **Notepad**
+  - Simple editor with export options
 
-2. Install dependencies:
-   ```
-   pip install -r requirements.txt
-   ```
+- **Reader**
+  - Built-in document viewer
 
-3. Run the application:
-   ```
-   python main.py
-   ```
+- **Web Page Fetching**
+  - Extract and read clean text from web pages
 
-## Usage
+## Distribution
 
-- Launch the app and enter text to convert to speech.
-- Use "Add File" to load text from supported files.
-- Configure API keys in Settings for AI features.
-- Adjust language, speed, and pitch for TTS.
+InspectTTS is distributed as a **standalone portable Windows executable**.
 
-## Configuration
+- No installation required
+- No Python environment needed
+- All required dependencies are bundled
 
-- API keys are stored in `settings.ini`.
+The application is provided via **GitHub Releases** only.
 
-## Status: Experimental / Educational Project
+## Source Code Availability
 
-## Audience: Accessibility-focused users and developers
+InspectTTS is currently distributed as a **binary-only experimental release**.
 
-## Contact:
+- The source code is **not publicly available at this stage**
+- This decision is made for security, sustainability, and project maturation reasons
+- Users are encouraged to test the application and provide feedback
 
-Telegram: @ms35last
+Source code availability may be reconsidered in the future.
 
-## Contributing
+## Feedback & Issues
 
-Feel free to submit issues or pull requests.
+Feedback, bug reports, and feature requests are welcome.
+
+- GitHub Issues (for users familiar with GitHub)
+https://github.com/inspector3535/Inspect-TTS-issues
+- Telegram: **@ms35last**
+
+## Project Status
+
+- **Status**: Experimental / Educational
+- **Audience**: Accessibility-focused users
 
 ## License
 
-This project is licensed under the MIT License - see the LICENSE file for details.
+This project is licensed under the MIT License.  
+The license applies to the distributed binaries and documentation.  
+Source code is not publicly available at this time.
 
 ## Credits
 
 - TTS API by Sujan Rai
-- Built with wxPython
+- Built with Love.
